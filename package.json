@@ -1,0 +1,22 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phat-trien-ung-dung-web-4conheo/back-end.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phat-trien-ung-dung-web-4conheo/back-end/issues"
+  },
+  "homepage": "https://github.com/phat-trien-ung-dung-web-4conheo/back-end#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
