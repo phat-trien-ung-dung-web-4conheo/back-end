@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 require("dotenv").config();
 //IMPORT ROUTES
-const authRoute = require("./routes/auth");
+const authRoute = require("./Routes/auth");
 
 //MIDLEWARE
 app.use(express.json());
