@@ -5,6 +5,8 @@ require("dotenv").config();
 
 //IMPORT ROUTES
 const authRoute = require("./Routes/auth");
+const users = require("./Routes/user");
+const product = require("./Routes/product");
 //CONECT TO DB
 mongoose
   .connect(process.env.MONGO_PROD_URI, {
@@ -23,7 +25,9 @@ app.get("/", (req, res) => {
 app.use(express.json());
 
 //ROUTE MIDDLEWARE
-app.use("/user", authRoute);
+app.use("/api/users", users);
+app.use("/api/auth", authRoute);
+app.use("/api/products", product);
 
 port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server started ${port}`));

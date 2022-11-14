@@ -19,20 +19,17 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     size: {
-      type: String,
+      type: Array,
     },
     color: {
-      type: String,
+      type: Array,
     },
     price: {
       type: Number,
       required: true,
     },
 
-    isAdmin: {
-      type: Boolean,
-      default: false,
-    },
+    inStock: { type: Boolean, default: true },
   },
   { timestamps: true }
   //Mongoose have already created a field timestamps, so we don't need to create it again with createdAt

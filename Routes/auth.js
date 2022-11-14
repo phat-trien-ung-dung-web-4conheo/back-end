@@ -20,13 +20,13 @@ router.post("/register", async (req, res) => {
 
   // Create a new user
   const user = new User({
-    name: req.body.name,
+    username: req.body.username,
     email: req.body.email,
     password: hashedPassword,
   });
   try {
     const savedUser = await user.save();
-    res.send(savedUser);
+    res.status(201).send(savedUser);
   } catch (error) {
     res.status(400).send(error);
   }
@@ -43,16 +43,26 @@ router.post("/login", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
   //Checking if the email exists
   const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Email is not found");
+  if (!user) return res.status(401).send("Email is not found");
   //PASSWORD IS CORRECT
   const validPass = await bcrypt.compare(req.body.password, user.password);
-  if (!validPass) return res.status(400).send("Invalid password");
+  if (!validPass) return res.status(401).send("Invalid password");
 
   //CREATE AND ASSIGN A TOKEN
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-  res.header("auth-token", token).send(token);
-
-  res.send("Logged in!");
+  try {
+    const accessToken = jwt.sign(
+      { _id: user._id, isAdmin: user.isAdmin },
+      process.env.TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+    const { password, ...others } = user._doc;
+    res
+      .status(200)
+      .header("auth-token", accessToken)
+      .send({ ...others, accessToken });
+  } catch (error) {
+    res.status(500).send(error);
+  }
 });
 
 module.exports = router;
