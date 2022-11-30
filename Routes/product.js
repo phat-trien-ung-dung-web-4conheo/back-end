@@ -1,7 +1,6 @@
 const Product = require("../Models/Product");
-const bcrypt = require("bcryptjs");
 const {
-  veryfiToken,
+  verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
 } = require("./verifytoken");
@@ -35,7 +34,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
     res.status(200).json("Product has been deleted...");
@@ -45,7 +44,7 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //GET PRODUCT
-router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
+router.get("/find/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     res.status(200).json(product);
@@ -55,7 +54,7 @@ router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
 });
 
 //GET ALL PRODUCT
-router.get("/", verifyTokenAndAdmin, async (req, res) => {
+router.get("/", async (req, res) => {
   const qNew = req.query.new;
   const qCategory = req.query.category;
   try {

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const OrderSchema = new mongoose.Schema(
   {
-    UserId: {
+    userId: {
       type: String,
       required: true,
     },
@@ -24,4 +24,4 @@ const OrderSchema = new mongoose.Schema(
   //Mongoose have already created a field timestamps, so we don't need to create it again with createdAt
 );
 
-module.exports = mongoose.model("Cart", OrderSchema);
+module.exports = mongoose.model("Order", OrderSchema);

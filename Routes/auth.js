@@ -32,10 +32,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.get("/register", (req, res) => {
-  res.send("this is register page");
-});
-
 //LOGIN ROUTE
 router.post("/login", async (req, res) => {
   // LETS VALIDATE THE DATA BEFORE WE A USER
