@@ -23,6 +23,9 @@ mongoose
 app.get("/", (req, res) => {
   res.send("we are on home");
 });
+//MIDLEWARE
+app.use(cors());
+app.use(express.json());
 
 //ROUTE MIDDLEWARE
 app.use("/api/users", users);
@@ -30,9 +33,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/products", productRoute);
 app.use("/api/carts", cartRoute);
 app.use("/api/orders", orderRoute);
-//MIDLEWARE
-app.use(cors());
-app.use(express.json());
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Server started ${port}`));
