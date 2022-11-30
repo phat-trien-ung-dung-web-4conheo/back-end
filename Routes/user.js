@@ -5,7 +5,7 @@ const {
   veryfiToken,
   verifyTokenAndAuthorization,
   verifyTokenAndAdmin,
-} = require("./verifytoken");
+} = require("./verifyToken");
 const router = require("express").Router();
 
 //UPDATE
