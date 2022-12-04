@@ -49,7 +49,7 @@ router.post("/login", async (req, res) => {
     const accessToken = jwt.sign(
       { _id: user._id, isAdmin: user.isAdmin },
       process.env.TOKEN_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "6h" }
     );
     const { password, ...others } = user._doc;
     res
@@ -59,6 +59,13 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
+});
+
+//LOGOUT ROUTE
+router.post("/logout", async (req, res) => {
+  const accessToken = req.headers.token;
+  console.log(accessToken);
+  // res.status(200).send("Logged out", accessToken);
 });
 
 module.exports = router;

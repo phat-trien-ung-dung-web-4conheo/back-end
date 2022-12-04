@@ -8,13 +8,84 @@ const router = require("express").Router();
 
 //CREATE
 router.post("/", verifyToken, async (req, res) => {
-  const newCart = new Cart(req.body);
-  try {
-    const savedCart = await newCart.save();
-    res.status(200).json(savedCart);
-  } catch (err) {
-    res.status(500).json(err);
+  // const existingProductIndex = Cart.products.findIndex(
+  //   (product) => product.productId === req.body.products[0].productId
+  // );
+
+  //Is product already in cart?
+  const existingProduct = await Cart.find({
+    $and: [
+      { "products.productId": req.body.products[0].productId },
+      { "products.size": req.body.products[0].size },
+      { userId: req.body.userId },
+      { "products.color": req.body.products[0].color },
+    ],
+  });
+  if (existingProduct.length) {
+    const productQuantity = existingProduct[0].products[0].quantity;
+
+    console.log(
+      "🚀 ~ file: cart.js:26 ~ router.post ~ productQuantity",
+      productQuantity
+    );
+    const updatedProduct = await Cart.findOneAndUpdate(
+      {
+        $and: [
+          { "products.productId": req.body.products[0].productId },
+          { "products.size": req.body.products[0].size },
+          { userId: req.body.userId },
+          { "products.color": req.body.products[0].color },
+        ],
+      },
+      req.body.products[0].quantity > 1
+        ? {
+            $set: {
+              "products.$.quantity":
+                req.body.products[0].quantity + productQuantity,
+            },
+          }
+        : { $inc: { "products.$.quantity": 1 } },
+      {
+        //To get the updated product for database and frontend
+        new: true,
+      }
+    );
+    const findProduct = await Cart.find({
+      "products.userId": req.body.userId,
+    });
+    console.log("findProduct: ", findProduct);
+    updatedProduct.totalPrice = updatedProduct.products.reduce(
+      (total, item) => (findProduct ? total + item.price * item.quantity : 0),
+      0
+    );
+    try {
+      const savedCart = await updatedProduct.save();
+      res.status(200).json(savedCart);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  } else {
+    try {
+      const newCart = new Cart(req.body);
+      // console.log("newCart ", newCart);
+
+      newCart.totalPrice = newCart.products.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+      console.log("newCart.totalPrice 123", newCart.totalPrice);
+      const savedCart = await newCart.save();
+      res.status(200).json(savedCart);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
+  console.log(
+    "🚀 ~ file: cart.js:20 ~ router.post ~ existingProduct.length",
+    existingProduct
+  );
+
+  // const updateTotalPrice = await Cart.findOneAndUpdate();
 });
 //UPDATE
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
@@ -46,7 +117,7 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 //GET USER CART
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId });
+    const cart = await Cart.find({ userId: req.params.userId });
     res.status(200).json(cart);
   } catch (err) {
     res.status(500).json(err);
