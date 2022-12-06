@@ -105,9 +105,18 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 //DELETE
-router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
+router.delete("/:id", verifyToken, async (req, res) => {
   try {
     await Cart.findByIdAndDelete(req.params.id);
+    res.status(200).json("Cart has been deleted...");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+//DELETE ALL CARTS AFTER USER PURCHASED
+router.delete("/deleteAll/:id", verifyToken, async (req, res) => {
+  try {
+    await Cart.deleteMany({ userId: req.params.id });
     res.status(200).json("Cart has been deleted...");
   } catch (err) {
     res.status(500).json(err);
