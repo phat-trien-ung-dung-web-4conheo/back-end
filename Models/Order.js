@@ -47,6 +47,7 @@ const OrderSchema = new mongoose.Schema(
     phone: { type: String, required: true },
     amount: { type: Number, required: true },
     email: { type: String, required: true },
+    payments: { type: String, required: true },
     creditCard: { type: Object, required: true },
     address: { type: Object, required: true },
     status: { type: String, default: "pending" },
